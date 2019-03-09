@@ -31,9 +31,19 @@ exports.homing = async function(port) {
     //console.log('Message:', str)
     console.log('Homing...')
   })
-  await port.sendln('$h')
-  await port.wait('ok\r\n').then( result => {
+  await port.sendln('$x')
+  await port.wait('ok\r\n').then(result => {
     port.get_buffer_wait()
-    console.log('Ready!')
+    console.log('Ready reset alarm')
+  })
+  await port.sendln('$h')
+  await port.wait('ok\r\n').then(result => {
+    port.get_buffer_wait()
+    console.log('Ready homing!')
+  })
+  await port.sendln('G21 G92 X0 Y0 Z0')
+  await port.wait('ok\r\n').then(result => {
+    port.get_buffer_wait()
+    console.log('Ready reset work position!')
   })
 }

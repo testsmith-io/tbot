@@ -2,6 +2,7 @@ var express = require('express')
 var bodyParser = require('body-parser')
 
 var app = express()
+var expressWs = require('express-ws')(app)
 var jsonParser = bodyParser.json()
 
 
@@ -31,6 +32,10 @@ class Webserver {
 
     app.get('/', function (req, res) {
       res.send('Welcome to Tapster Tbot!')
+    })
+
+    app.ws('/echo', function(ws, req) {
+      this.serialport.sendln('G0 Z-1')
     })
 
     app.post('/go', jsonParser, async (req, res) => {

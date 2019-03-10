@@ -64,7 +64,7 @@ class Webserver {
     app.post('/up', async (req, res) => {
       console.log('Stylus Up Request')
       // Move to position
-      await this.serialport.sendln('G0 Z-1')
+      await this.serialport.sendln('G0 Z1')
       await this.serialport.wait('ok\r\n').then(result => {
         this.serialport.get_buffer_wait()
         console.log('Moving stylus up')
@@ -76,7 +76,7 @@ class Webserver {
     app.post('/down', async (req, res) => {
       console.log('Stylus Down Request')
       // Move to position
-      await this.serialport.sendln('G0 Z1')
+      await this.serialport.sendln('G0 Z-1')
       await this.serialport.wait('ok\r\n').then(result => {
         this.serialport.get_buffer_wait()
         console.log('Moving stylus down')
@@ -85,6 +85,49 @@ class Webserver {
       })
     })
 
+    app.post('/tap', async (req, res) => {
+      console.log('Stylus Tap Request')
+      // Move to position
+      await this.serialport.sendln('G0 Z-1')
+      await this.serialport.wait('ok\r\n').then(result => {
+        this.serialport.get_buffer_wait()
+        console.log('Moving stylus down')
+        console.log('OK')
+      })
+      await this.serialport.sendln('G0 Z1')
+      await this.serialport.wait('ok\r\n').then(result => {
+        this.serialport.get_buffer_wait()
+        console.log('Moving stylus up')
+        console.log('OK')
+        res.send(JSON.stringify('OK') + '\n')
+      })
+    })
+
+    app.post('/long-tap', async (req, res) => {
+      console.log('Stylus Long-tap Request')
+      // Move to position
+      await this.serialport.sendln('G0 Z-1')
+      await this.serialport.wait('ok\r\n').then(result => {
+        this.serialport.get_buffer_wait()
+        console.log('Moving stylus down')
+        console.log('OK')
+      })
+      await sleep(2500)
+
+      await this.serialport.sendln('G0 Z1')
+      await this.serialport.wait('ok\r\n').then(result => {
+        this.serialport.get_buffer_wait()
+        console.log('Moving stylus up')
+        console.log('OK')
+        res.send(JSON.stringify('OK') + '\n')
+      })
+    })
+
+    function sleep(ms){
+      return new Promise(resolve=>{
+        setTimeout(resolve,ms)
+      })
+    }
 
     app.post('/home', async (req, res) => {
       console.log('Homing Request')
